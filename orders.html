@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 12px 30px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: #667eea;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        select,
+        input[type="date"] {
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        table th {
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-shipped {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-small:hover {
+            opacity: 0.8;
+        }
+
+        .btn-view {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <h1>🛒 Orders & Transactions</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active">Purchase Orders</button>
+            <button class="tab-button">Sales Orders</button>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                📥 Purchase Orders (Incoming Stock)
+            </div>
+
+            <div class="toolbar">
+                <div class="search-filter">
+                    <input type="text" placeholder="🔍 Search by Order ID, Supplier...">
+                    <input type="date">
+                    <select>
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button class="btn-primary">➕ Create Purchase Order</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Supplier Name</th>
+                        <th>Products</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#PO-001</td>
+                        <td>Tech Suppliers Ltd.</td>
+                        <td>Laptop Dell XPS 15</td>
+                        <td>50</td>
+                        <td>29 Oct 2025</td>
+                        <td>₹62,50,000</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#PO-002</td>
+                        <td>Furniture Hub Inc.</td>
+                        <td>Office Chair Premium</td>
+                        <td>100</td>
+                        <td>30 Oct 2025</td>
+                        <td>₹15,50,000</td>
+                        <td><span class="status-badge status-processing">Processing</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#PO-003</td>
+                        <td>Fashion Textiles Co.</td>
+                        <td>T-Shirts (Various)</td>
+                        <td>500</td>
+                        <td>31 Oct 2025</td>
+                        <td>₹2,99,500</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#PO-004</td>
+                        <td>Electronics Zone</td>
+                        <td>Wireless Mouse</td>
+                        <td>200</td>
+                        <td>28 Oct 2025</td>
+                        <td>₹2,40,000</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                📤 Sales Orders (Outgoing Stock)
+            </div>
+
+            <div class="toolbar">
+                <div class="search-filter">
+                    <input type="text" placeholder="🔍 Search by Order ID, Customer...">
+                    <input type="date">
+                    <select>
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button class="btn-primary">📊 Export Report</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Products</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#SO-001</td>
+                        <td>Rahul Kumar</td>
+                        <td>Laptop Dell XPS 15</td>
+                        <td>1</td>
+                        <td>31 Oct 2025</td>
+                        <td>₹1,25,000</td>
+                        <td><span class="status-badge status-shipped">Shipped</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-cancel">❌ Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#SO-002</td>
+                        <td>Priya Sharma</td>
+                        <td>Office Chair Premium</td>
+                        <td>2</td>
+                        <td>31 Oct 2025</td>
+                        <td>₹31,000</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#SO-003</td>
+                        <td>Amit Patel</td>
+                        <td>T-Shirt Cotton Blue</td>
+                        <td>5</td>
+                        <td>30 Oct 2025</td>
+                        <td>₹2,995</td>
+                        <td><span class="status-badge status-processing">Processing</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-cancel">❌ Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#SO-004</td>
+                        <td>Sneha Gupta</td>
+                        <td>Desk Lamp LED</td>
+                        <td>3</td>
+                        <td>30 Oct 2025</td>
+                        <td>₹7,500</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                                <button class="btn-small btn-cancel">❌ Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#SO-005</td>
+                        <td>Vikram Singh</td>
+                        <td>Jeans Dark Blue</td>
+                        <td>2</td>
+                        <td>29 Oct 2025</td>
+                        <td>₹3,998</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#SO-006</td>
+                        <td>Anjali Reddy</td>
+                        <td>Wireless Mouse</td>
+                        <td>1</td>
+                        <td>28 Oct 2025</td>
+                        <td>₹1,200</td>
+                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-view">👁️ View</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!-- Add this script section to orders.html -->
+<script>
+    // ==========================
+    // LOAD ORDERS ON PAGE LOAD
+    // ==========================
+    window.onload = function() {
+        loadAllOrders();
+    };
+
+    // ==========================
+    // LOAD ALL ORDERS
+    // ==========================
+    function loadAllOrders() {
+        google.script.run
+            .withSuccessHandler(function(orders) {
+                displayOrders(orders);
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error loading orders:', error);
+                alert('Error loading orders! Please refresh the page.');
+            })
+            .getAllOrders();
+    }
+
+    // ==========================
+    // DISPLAY ORDERS IN TABLES
+    // ==========================
+    function displayOrders(orders) {
+        // Separate purchase and sales orders
+        var purchaseOrders = orders.filter(function(order) {
+            return order.OrderType === 'Purchase';
+        });
+        
+        var salesOrders = orders.filter(function(order) {
+            return order.OrderType === 'Sale';
+        });
+        
+        displayPurchaseOrders(purchaseOrders);
+        displaySalesOrders(salesOrders);
+    }
+
+    // ==========================
+    // DISPLAY PURCHASE ORDERS
+    // ==========================
+    function displayPurchaseOrders(orders) {
+        var tbody = document.querySelector('#purchaseOrdersTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        if (orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No purchase orders found</td></tr>';
+            return;
+        }
+        
+        orders.forEach(function(order) {
+            var row = tbody.insertRow();
+            var statusClass = getStatusClass(order.Status);
+            var dateStr = formatDate(order.Date);
+            
+            row.innerHTML = `
+                <td>${order.OrderID}</td>
+                <td>${order.CustomerName}</td>
+                <td>${order.ProductName}</td>
+                <td>${order.Quantity}</td>
+                <td>${dateStr}</td>
+                <td>₹${parseFloat(order.TotalAmount).toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${order.Status}</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-small btn-view" onclick='viewOrder("${order.OrderID}")'>👁️ View</button>
+                        <button class="btn-small btn-edit" onclick='updateStatus("${order.OrderID}")'>✏️ Edit</button>
+                    </div>
+                </td>
+            `;
+        });
+    }
+
+    // ==========================
+    // DISPLAY SALES ORDERS
+    // ==========================
+    function displaySalesOrders(orders) {
+        var tbody = document.querySelector('#salesOrdersTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        if (orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No sales orders found</td></tr>';
+            return;
+        }
+        
+        orders.forEach(function(order) {
+            var row = tbody.insertRow();
+            var statusClass = getStatusClass(order.Status);
+            var dateStr = formatDate(order.Date);
+            
+            row.innerHTML = `
+                <td>${order.OrderID}</td>
+                <td>${order.CustomerName}</td>
+                <td>${order.ProductName}</td>
+                <td>${order.Quantity}</td>
+                <td>${dateStr}</td>
+                <td>₹${parseFloat(order.TotalAmount).toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${order.Status}</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-small btn-view" onclick='viewOrder("${order.OrderID}")'>👁️ View</button>
+                        <button class="btn-small btn-cancel" onclick='cancelOrder("${order.OrderID}")'>❌ Cancel</button>
+                    </div>
+                </td>
+            `;
+        });
+    }
+
+    // ==========================
+    // CREATE NEW ORDER
+    // ==========================
+    function createNewOrder(orderType) {
+        // Get form values (you'll need to create a form)
+        var orderData = {
+            orderType: orderType,
+            customerName: prompt('Enter ' + (orderType === 'Purchase' ? 'Supplier' : 'Customer') + ' Name:'),
+            productName: prompt('Enter Product Name:'),
+            quantity: parseInt(prompt('Enter Quantity:')),
+            totalAmount: parseFloat(prompt('Enter Total Amount:'))
+        };
+        
+        if (!orderData.customerName || !orderData.productName) {
+            alert('Please fill all required fields!');
+            return;
+        }
+        
+        google.script.run
+            .withSuccessHandler(function(response) {
+                if (response.success) {
+                    alert(response.message + '\nOrder ID: ' + response.orderID);
+                    loadAllOrders(); // Reload orders
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error:', error);
+                alert('Error creating order!');
+            })
+            .createOrder(orderData);
+    }
+
+    // ==========================
+    // UPDATE ORDER STATUS
+    // ==========================
+    function updateStatus(orderID) {
+        var newStatus = prompt('Enter new status:\n\n- Pending\n- Processing\n- Completed\n- Shipped\n- Cancelled', 'Processing');
+        
+        if (!newStatus) return;
+        
+        google.script.run
+            .withSuccessHandler(function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    loadAllOrders();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error:', error);
+                alert('Error updating order status!');
+            })
+            .updateOrderStatus(orderID, newStatus);
+    }
+
+    // ==========================
+    // CANCEL ORDER
+    // ==========================
+    function cancelOrder(orderID) {
+        if (confirm('Are you sure you want to cancel order ' + orderID + '?')) {
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        loadAllOrders();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    console.error('Error:', error);
+                    alert('Error cancelling order!');
+                })
+                .updateOrderStatus(orderID, 'Cancelled');
+        }
+    }
+
+    // ==========================
+    // SEARCH ORDERS
+    // ==========================
+    function searchOrders() {
+        var query = document.getElementById('searchInput').value.toLowerCase();
+        loadAllOrders(); // Reload and filter locally for now
+    }
+
+    // ==========================
+    // HELPER FUNCTIONS
+    // ==========================
+    function getStatusClass(status) {
+        var statusMap = {
+            'Completed': 'status-completed',
+            'Pending': 'status-pending',
+            'Processing': 'status-processing',
+            'Shipped': 'status-shipped',
+            'Cancelled': 'status-cancelled'
+        };
+        return statusMap[status] || 'status-pending';
+    }
+
+    function formatDate(date) {
+        var d = new Date(date);
+        var day = d.getDate();
+        var month = d.toLocaleString('en-US', { month: 'short' });
+        var year = d.getFullYear();
+        return day + ' ' + month + ' ' + year;
+    }
+
+    function viewOrder(orderID) {
+        alert('View order details: ' + orderID + '\n\nYou can create a detailed view modal here');
+    }
+
+    // ==========================
+    // EXPORT REPORT
+    // ==========================
+    function exportReport() {
+        alert('Export functionality coming soon!\n\nYou can implement CSV/PDF export here');
+    }
+</script>
+
+</body>
+</html>

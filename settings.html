@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-small:hover {
+            opacity: 0.8;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .report-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 25px;
+        }
+
+        .report-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <h1>⚙️ Settings & Configuration</h1>
+        
+        <div class="settings-grid">
+            <!-- Category Management -->
+            <div class="settings-card">
+                <div class="card-title">
+                    📂 Category Management
+                </div>
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input type="text" placeholder="Enter category name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea placeholder="Enter category description"></textarea>
+                </div>
+                <button class="btn-primary">➕ Add Category</button>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Electronics</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Furniture</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Clothing</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Accessories</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Supplier Management -->
+            <div class="settings-card">
+                <div class="card-title">
+                    🏢 Supplier Management
+                </div>
+                <div class="form-group">
+                    <label>Supplier Name</label>
+                    <input type="text" placeholder="Enter supplier name">
+                </div>
+                <div class="form-group">
+                    <label>Contact Email</label>
+                    <input type="email" placeholder="supplier@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" placeholder="+91 XXXXX XXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea placeholder="Enter supplier address"></textarea>
+                </div>
+                <button class="btn-primary">➕ Add Supplier</button>
+            </div>
+
+            <!-- Warehouse/Location Settings -->
+            <div class="settings-card">
+                <div class="card-title">
+                    🏭 Warehouse / Location
+                </div>
+                <div class="form-group">
+                    <label>Warehouse Name</label>
+                    <input type="text" placeholder="Enter warehouse name">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" placeholder="Enter location">
+                </div>
+                <div class="form-group">
+                    <label>Capacity (items)</label>
+                    <input type="number" placeholder="Enter maximum capacity">
+                </div>
+                <div class="form-group">
+                    <label>Manager Name</label>
+                    <input type="text" placeholder="Enter manager name">
+                </div>
+                <button class="btn-primary">➕ Add Warehouse</button>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Warehouse</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Main Warehouse</td>
+                            <td>New Delhi</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Secondary Storage</td>
+                            <td>Patna, Bihar</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Alert Settings -->
+            <div class="settings-card">
+                <div class="card-title">
+                    🔔 Stock Alert Settings
+                </div>
+                <div class="form-group">
+                    <label>Low Stock Threshold (%)</label>
+                    <input type="number" value="20" placeholder="Enter percentage">
+                </div>
+                <div class="form-group">
+                    <label>Critical Stock Threshold (%)</label>
+                    <input type="number" value="10" placeholder="Enter percentage">
+                </div>
+                <div class="form-group">
+                    <label>Alert Email</label>
+                    <input type="email" placeholder="alerts@yourcompany.com">
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="email-alerts" checked>
+                    <label for="email-alerts">Enable Email Alerts</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="sms-alerts">
+                    <label for="sms-alerts">Enable SMS Alerts</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="daily-report" checked>
+                    <label for="daily-report">Daily Summary Report</label>
+                </div>
+
+                <button class="btn-primary">💾 Save Settings</button>
+            </div>
+
+            <!-- User Management -->
+            <div class="settings-card">
+                <div class="card-title">
+                    👥 User Management
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Manager</option>
+                        <option value="staff">Staff</option>
+                        <option value="viewer">Viewer</option>
+                    </select>
+                </div>
+                <button class="btn-primary">➕ Add User</button>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ken (You)</td>
+                            <td>Admin</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>manager@company.com</td>
+                            <td>Manager</td>
+                            <td>
+                                <button class="btn-small btn-edit">✏️ Edit</button>
+                                <button class="btn-small btn-delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- System Settings -->
+            <div class="settings-card">
+                <div class="card-title">
+                    🖥️ System Settings
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" value="Ken's Inventory System" placeholder="Enter company name">
+                </div>
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select>
+                        <option value="INR" selected>INR (₹)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date Format</label>
+                    <select>
+                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Time Zone</label>
+                    <select>
+                        <option value="IST" selected>IST (India Standard Time)</option>
+                        <option value="UTC">UTC</option>
+                        <option value="PST">PST (Pacific)</option>
+                        <option value="EST">EST (Eastern)</option>
+                    </select>
+                </div>
+                <button class="btn-primary">💾 Save Settings</button>
+                <button class="btn-secondary">🔄 Reset to Default</button>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="report-section">
+            <div class="card-title">
+                📊 Generate Reports
+            </div>
+            
+            <div class="report-options">
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select>
+                        <option value="">Select Report Type</option>
+                        <option value="stock">Stock Report</option>
+                        <option value="sales">Sales Report</option>
+                        <option value="purchase">Purchase Report</option>
+                        <option value="inventory-value">Inventory Value Report</option>
+                        <option value="low-stock">Low Stock Report</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date">
+                </div>
+                
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date">
+                </div>
+                
+                <div class="form-group">
+                    <label>Export Format</label>
+                    <select>
+                        <option value="csv">CSV</option>
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary">📥 Generate & Download Report</button>
+        </div>
+    </div>
+<!-- Add this script section to settings.html -->
+<script>
+    // ==========================
+    // LOAD DATA ON PAGE LOAD
+    // ==========================
+    window.onload = function() {
+        loadCategories();
+        loadSuppliers();
+    };
+
+    // ==========================
+    // CATEGORIES MANAGEMENT
+    // ==========================
+    
+    function loadCategories() {
+        google.script.run
+            .withSuccessHandler(function(categories) {
+                displayCategories(categories);
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error loading categories:', error);
+            })
+            .getAllCategories();
+    }
+
+    function displayCategories(categories) {
+        var tbody = document.querySelector('#categoriesTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        if (categories.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align: center;">No categories found</td></tr>';
+            return;
+        }
+        
+        categories.forEach(function(category) {
+            var row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${category.CategoryName}</td>
+                <td>
+                    <button class="btn-small btn-edit" onclick='editCategory("${category.CategoryName}")'>✏️ Edit</button>
+                    <button class="btn-small btn-delete" onclick='deleteCategory("${category.CategoryName}")'>🗑️ Delete</button>
+                </td>
+            `;
+        });
+    }
+
+    function addCategory() {
+        var categoryName = document.getElementById('categoryName').value;
+        var description = document.getElementById('categoryDesc').value;
+        
+        if (!categoryName.trim()) {
+            alert('Please enter category name!');
+            return;
+        }
+        
+        var categoryData = {
+            categoryName: categoryName,
+            description: description
+        };
+        
+        google.script.run
+            .withSuccessHandler(function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    document.getElementById('categoryName').value = '';
+                    document.getElementById('categoryDesc').value = '';
+                    loadCategories();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error:', error);
+                alert('Error adding category!');
+            })
+            .createCategory(categoryData);
+    }
+
+    function editCategory(categoryName) {
+        var newName = prompt('Edit category name:', categoryName);
+        if (newName && newName !== categoryName) {
+            alert('Edit functionality: Update ' + categoryName + ' to ' + newName);
+            // You can implement update function in Apps Script
+        }
+    }
+
+    function deleteCategory(categoryName) {
+        if (confirm('Are you sure you want to delete category "' + categoryName + '"?\n\nThis cannot be undone!')) {
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        loadCategories();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    console.error('Error:', error);
+                    alert('Error deleting category!');
+                })
+                .deleteCategory(categoryName);
+        }
+    }
+
+    // ==========================
+    // SUPPLIERS MANAGEMENT
+    // ==========================
+    
+    function loadSuppliers() {
+        google.script.run
+            .withSuccessHandler(function(suppliers) {
+                console.log('Suppliers loaded:', suppliers);
+                // You can display suppliers in a table if needed
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error loading suppliers:', error);
+            })
+            .getAllSuppliers();
+    }
+
+    function addSupplier() {
+        var supplierData = {
+            supplierName: document.getElementById('supplierName').value,
+            contactEmail: document.getElementById('supplierEmail').value,
+            phoneNumber: document.getElementById('supplierPhone').value,
+            address: document.getElementById('supplierAddress').value
+        };
+        
+        if (!supplierData.supplierName.trim()) {
+            alert('Please enter supplier name!');
+            return;
+        }
+        
+        google.script.run
+            .withSuccessHandler(function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    // Clear form
+                    document.getElementById('supplierName').value = '';
+                    document.getElementById('supplierEmail').value = '';
+                    document.getElementById('supplierPhone').value = '';
+                    document.getElementById('supplierAddress').value = '';
+                    loadSuppliers();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error('Error:', error);
+                alert('Error adding supplier!');
+            })
+            .createSupplier(supplierData);
+    }
+
+    // ==========================
+    // WAREHOUSE MANAGEMENT
+    // ==========================
+    
+    function addWarehouse() {
+        var warehouseName = document.getElementById('warehouseName').value;
+        var location = document.getElementById('warehouseLocation').value;
+        var capacity = document.getElementById('warehouseCapacity').value;
+        var manager = document.getElementById('warehouseManager').value;
+        
+        if (!warehouseName.trim()) {
+            alert('Please enter warehouse name!');
+            return;
+        }
+        
+        alert('Warehouse added: ' + warehouseName + '\n\nYou can create a Warehouses sheet and add this data to Google Sheets');
+        
+        // Clear form
+        document.getElementById('warehouseName').value = '';
+        document.getElementById('warehouseLocation').value = '';
+        document.getElementById('warehouseCapacity').value = '';
+        document.getElementById('warehouseManager').value = '';
+    }
+
+    // ==========================
+    // ALERT SETTINGS
+    // ==========================
+    
+    function saveAlertSettings() {
+        var settings = {
+            lowStockThreshold: document.getElementById('lowStockThreshold').value,
+            criticalStockThreshold: document.getElementById('criticalStockThreshold').value,
+            alertEmail: document.getElementById('alertEmail').value,
+            emailAlerts: document.getElementById('email-alerts').checked,
+            smsAlerts: document.getElementById('sms-alerts').checked,
+            dailyReport: document.getElementById('daily-report').checked
+        };
+        
+        alert('Alert settings saved!\n\n' + JSON.stringify(settings, null, 2));
+        // You can save these to a Settings sheet in Google Sheets
+    }
+
+    // ==========================
+    // USER MANAGEMENT
+    // ==========================
+    
+    function addUser() {
+        var userData = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('userEmail').value,
+            role: document.getElementById('userRole').value
+        };
+        
+        if (!userData.username.trim() || !userData.email.trim()) {
+            alert('Please fill all required fields!');
+            return;
+        }
+        
+        alert('User added: ' + userData.username + '\nRole: ' + userData.role);
+        
+        // Clear form
+        document.getElementById('username').value = '';
+        document.getElementById('userEmail').value = '';
+        document.getElementById('userRole').value = '';
+        
+        // You can create a Users sheet and save this data
+    }
+
+    // ==========================
+    // SYSTEM SETTINGS
+    // ==========================
+    
+    function saveSystemSettings() {
+        var settings = {
+            companyName: document.getElementById('companyName').value,
+            currency: document.getElementById('currency').value,
+            dateFormat: document.getElementById('dateFormat').value,
+            timeZone: document.getElementById('timeZone').value
+        };
+        
+        alert('System settings saved!\n\n' + JSON.stringify(settings, null, 2));
+        // You can save these to a Settings sheet
+    }
+
+    function resetSettings() {
+        if (confirm('Are you sure you want to reset all settings to default?')) {
+            document.getElementById('companyName').value = "Ken's Inventory System";
+            document.getElementById('currency').value = 'INR';
+            document.getElementById('dateFormat').value = 'DD/MM/YYYY';
+            document.getElementById('timeZone').value = 'IST';
+            alert('Settings reset to default!');
+        }
+    }
+
+    // ==========================
+    // GENERATE REPORTS
+    // ==========================
+    
+    function generateReport() {
+        var reportType = document.getElementById('reportType').value;
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+        var format = document.getElementById('exportFormat').value;
+        
+        if (!reportType) {
+            alert('Please select a report type!');
+            return;
+        }
+        
+        alert('Generating ' + reportType + ' report...\n\n' +
+              'Start Date: ' + startDate + '\n' +
+              'End Date: ' + endDate + '\n' +
+              'Format: ' + format.toUpperCase());
+        
+        // You can implement report generation in Google Apps Script
+        // using utilities to export as CSV/PDF
+    }
+</script>
+
+</body>
+</html>

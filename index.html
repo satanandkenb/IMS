@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <style>
+        /* Universal Selector */
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* Base Element */
+        body{
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding-top: 120px;
+        }
+
+
+        /* Navigation Section - STICKY */
+        nav{
+            position: sticky;
+            top: 0;
+            width: 80%;
+            display: flex;
+            left: 10%;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+            border-radius: 15px;
+            z-index: 1000;
+            padding: 5px 30px;
+            min-height: 5rem;
+            margin-bottom: 20px;
+        }
+
+
+        nav:hover{
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* Logo Section (inside nav) */
+        .logo{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            padding: 10px;
+            width: auto;
+            height: 60px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(31, 38, 135, 0.3);
+            font-family: 'Arial Black', sans-serif;
+            font-size: 24px;
+            color: #000;
+            font-weight: bold;
+        }
+
+
+        .logo:hover{
+            color: linear-gradient(135deg, #0011ff 0%, #fa00e5 100%);
+        }
+
+
+        /* Menu Button (inside nav) */
+        .menu-button{
+            background: rgba(0, 0, 0, 0);
+            border: none;
+            padding: 10px;
+            max-width: 100px;
+            max-height: 100px;
+            transform: rotateZ(0deg);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+
+        .menu-button:hover{
+            transform: rotateZ(360deg);
+            transition: all 0.5s ease;
+        }
+
+
+        /* SVG Icon (inside button) */
+        svg{
+            max-width: 50px;
+            max-height: 50px;
+            transform: rotateZ(90deg);
+            transition: transform 0.5s ease;
+        }
+
+
+        /* Menu List (inside nav) */
+        .menu{
+            min-height: 50px; 
+            max-width: 900px;
+            max-height: 60px;
+            display: none;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background: rgb(255, 255, 255, 0.2);
+            border-radius: 40px;
+            padding: 30px 20px;
+            backdrop-filter: blur(1px);
+            box-shadow: 0 4px 6px rgba(31, 38, 135, 0.3);
+            position: absolute;
+            z-index: 1000;
+            top: 95px;
+            right: 0px;
+            list-style: none;
+            gap: 10px;
+        }
+
+
+        /* Menu Links (inside menu list) */
+        li a{
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 8px 12px;
+            border-radius: 40px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+        }
+
+
+        li a:hover{
+            background-color: rgba(255, 255, 255, 1);
+            color: #000000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 40px;
+        }
+
+
+        /* Content Section */
+        .content{
+            position: relative;
+            width: 90%;
+            height: 1200px;
+            margin: 4% 50px;
+            background: white;
+            border-radius: 30px;
+            border: #000 5px solid;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+
+        iframe{
+            width: 100%;
+            height: 100%;
+            border: none;
+            margin: 0;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <!-- Glassmorphic Navigation Bar - STICKY -->
+    <nav>
+        <!-- Logo/Icon on Left -->
+        <div class="logo">
+            <div class="logo-icon">Ken</div>
+        </div>
+
+        <!-- Menu Button with SVG Icon on Right -->
+        <button class="menu-button" id="TgButton" onclick="toggleMenu()">
+            <!-- Hamburger Menu SVG Icon -->
+            <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="229px" height="229px" viewBox="-53 -53 635.99 635.99" xml:space="preserve" stroke="#000000" stroke-width="0.00529987" transform="rotate(90)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" stroke-width="13.779661999999998"> <g> <path d="M417.369,15.13c-20.157-9.62-132.564,153.382-132.564,153.382s-0.622,26.67,7.152,47.946 c7.048,0.297,13.875,1.922,20.312,5.001c9.294,4.437,16.639,11.303,21.735,19.45c23.361-5.853,47.449-26.259,47.449-26.259 S437.537,24.759,417.369,15.13z"></path> <path d="M337.207,290.731c-0.086,0.182-0.144,0.373-0.229,0.563c-6.234,13.054-17.643,22.702-31.04,27.12 c-6.799,21.4-5.345,47.448-5.345,47.448S418.307,525.079,438.14,514.79c19.832-10.279-42.468-198.23-42.468-198.23 S363.16,290.807,337.207,290.731z"></path> <path d="M0.004,260.867c-1.081,22.309,192.713,62.94,192.713,62.94s34.272-13.454,49.218-33.736 c-5.422-12.163-6.226-26.287-1.349-39.474c-14.392-19.364-42.696-33.765-42.696-33.765S1.085,238.558,0.004,260.867z"></path> <path d="M251.068,250.281c-2.008,4.208-3.107,8.654-3.672,13.148c-0.603,4.752-0.392,9.543,0.641,14.287 c0.383,1.769,0.698,3.557,1.31,5.298c3.806,10.776,11.6,19.431,21.917,24.365c5.824,2.782,12.021,4.188,18.418,4.188 c7.851,0,15.386-2.237,21.927-6.139c5.183-3.089,9.696-7.248,13.196-12.259c1.319-1.894,2.534-3.863,3.548-5.977 c7.229-15.138,4.6-32.369-5.098-44.772c-3.939-5.049-8.931-9.371-15.099-12.316c-3.662-1.75-7.507-2.754-11.418-3.404 c-2.313-0.382-4.628-0.784-7-0.784C273.32,225.906,258.135,235.479,251.068,250.281z"></path> <path d="M117.155,370.329l-8.243,4.849c21.209,36.099,52.479,64.757,90.413,82.868c11.877,5.671,24.26,10.146,36.873,13.493 l-22.252,31.967l97.997-30.953l-91.638-46.531l17.117,35.955c-11.619-3.156-23.017-7.335-33.976-12.565 C167.233,432.122,137.398,404.783,117.155,370.329z"></path> <path d="M452.961,144.673l7.344,102.51l21.832-32.943c13.301,46.885,9.371,96.514-11.753,140.75 c-3.175,6.646-6.751,13.196-10.643,19.469l8.138,5.03c4.063-6.569,7.812-13.426,11.14-20.388 c22.357-46.827,26.354-99.43,11.877-149.012l39.092,2.61L452.961,144.673z"></path> <path d="M145.278,116.75l-15.855-36.099l-24.709,99.756l87.497-53.914l-38.996-4.093c29.434-27.396,67.024-45.737,106.995-51.724 l-1.415-9.457C216.28,67.59,176.318,87.298,145.278,116.75z"></path> </g> </g><g id="SVGRepo_iconCarrier"> <g> <path d="M417.369,15.13c-20.157-9.62-132.564,153.382-132.564,153.382s-0.622,26.67,7.152,47.946 c7.048,0.297,13.875,1.922,20.312,5.001c9.294,4.437,16.639,11.303,21.735,19.45c23.361-5.853,47.449-26.259,47.449-26.259 S437.537,24.759,417.369,15.13z"></path> <path d="M337.207,290.731c-0.086,0.182-0.144,0.373-0.229,0.563c-6.234,13.054-17.643,22.702-31.04,27.12 c-6.799,21.4-5.345,47.448-5.345,47.448S418.307,525.079,438.14,514.79c19.832-10.279-42.468-198.23-42.468-198.23 S363.16,290.807,337.207,290.731z"></path> <path d="M0.004,260.867c-1.081,22.309,192.713,62.94,192.713,62.94s34.272-13.454,49.218-33.736 c-5.422-12.163-6.226-26.287-1.349-39.474c-14.392-19.364-42.696-33.765-42.696-33.765S1.085,238.558,0.004,260.867z"></path> <path d="M251.068,250.281c-2.008,4.208-3.107,8.654-3.672,13.148c-0.603,4.752-0.392,9.543,0.641,14.287 c0.383,1.769,0.698,3.557,1.31,5.298c3.806,10.776,11.6,19.431,21.917,24.365c5.824,2.782,12.021,4.188,18.418,4.188 c7.851,0,15.386-2.237,21.927-6.139c5.183-3.089,9.696-7.248,13.196-12.259c1.319-1.894,2.534-3.863,3.548-5.977 c7.229-15.138,4.6-32.369-5.098-44.772c-3.939-5.049-8.931-9.371-15.099-12.316c-3.662-1.75-7.507-2.754-11.418-3.404 c-2.313-0.382-4.628-0.784-7-0.784C273.32,225.906,258.135,235.479,251.068,250.281z"></path> <path d="M117.155,370.329l-8.243,4.849c21.209,36.099,52.479,64.757,90.413,82.868c11.877,5.671,24.26,10.146,36.873,13.493 l-22.252,31.967l97.997-30.953l-91.638-46.531l17.117,35.955c-11.619-3.156-23.017-7.335-33.976-12.565 C167.233,432.122,137.398,404.783,117.155,370.329z"></path> <path d="M452.961,144.673l7.344,102.51l21.832-32.943c13.301,46.885,9.371,96.514-11.753,140.75 c-3.175,6.646-6.751,13.196-10.643,19.469l8.138,5.03c4.063-6.569,7.812-13.426,11.14-20.388 c22.357-46.827,26.354-99.43,11.877-149.012l39.092,2.61L452.961,144.673z"></path> <path d="M145.278,116.75l-15.855-36.099l-24.709,99.756l87.497-53.914l-38.996-4.093c29.434-27.396,67.024-45.737,106.995-51.724 l-1.415-9.457C216.28,67.59,176.318,87.298,145.278,116.75z"></path> </g> </g>
+            </svg>
+        </button>
+
+
+        <ul class="menu">
+            <li><a onclick="Dashboard()">Dashboard</a></li>
+            <li><a onclick="Orders()">Orders</a></li>
+            <li><a onclick="Products()">Products</a></li>
+            <li><a onclick="Settings()">Settings</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div class="content">
+        <iframe src="" id="Reframe" loading="lazy"></iframe>
+    </div>
+
+
+    <script>
+        // ============================================
+        // IMPORTANT: Replace with your deployment URL
+        // ============================================
+        // const DEPLOYMENT_URL = 'https://script.google.com/macros/s/AKfycbz8QA0_xUZOzgzml86IMV7pZyPuv4AS5Fz5H_lZyXYZlGf1tIyStCNk4-5XjvkSgI-wXA/exec';
+        
+        // // Load dashboard by default when page loads
+        // window.onload = function() {
+        //     Dashboard();
+        // };
+
+
+        // Toggle Menu Function
+        function toggleMenu() {
+            let menu = document.querySelector('.menu');
+            let button = document.getElementById('TgButton');
+            if (menu.style.display === 'inline-flex') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'inline-flex';
+            }
+        }
+        
+        // Navigation Functions
+        function Dashboard(){
+            let iframe = document.getElementById('Reframe');
+            iframe.style.display = 'block';
+            iframe.src = 'dashboard.html';
+            toggleMenu();
+        }
+
+
+        function Orders(){
+            let iframe = document.getElementById('Reframe');
+            iframe.style.display = 'block';
+            iframe.src = 'orders.html';
+            toggleMenu();
+        }
+
+
+        function Products(){
+            let iframe = document.getElementById('Reframe');
+            iframe.style.display = 'block';
+            iframe.src = 'products.html';
+            toggleMenu();
+        }
+
+
+        function Settings(){
+            let iframe = document.getElementById('Reframe');
+            iframe.style.display = 'block';
+            iframe.src = 'settings.html';
+            toggleMenu();
+        }
+    </script>
+</body>
+</html>

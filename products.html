@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <style>
+        /* Your existing CSS styles here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        /* ... rest of your CSS ... */
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <h1>📦 Product Management</h1>
+        
+        <div class="toolbar">
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="🔍 Search products..." onkeyup="searchProducts()">
+                <select id="categoryFilter" onchange="filterByCategory()">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Accessories">Accessories</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="showAddProductForm()">➕ Add New Product</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Reorder Level</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productsTableBody">
+                <!-- Products will be loaded here dynamically -->
+                <tr>
+                    <td colspan="8" style="text-align: center;">Loading products...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ADD THIS JAVASCRIPT CODE HERE -->
+    <script>
+        // ==========================
+        // LOAD PRODUCTS ON PAGE LOAD
+        // ==========================
+        window.onload = function() {
+            loadProducts();
+        };
+
+        // ==========================
+        // LOAD ALL PRODUCTS
+        // ==========================
+        function loadProducts() {
+            google.script.run
+                .withSuccessHandler(function(products) {
+                    displayProducts(products);
+                })
+                .withFailureHandler(function(error) {
+                    console.error('Error loading products:', error);
+                    alert('Error loading products! Please refresh the page.');
+                })
+                .getAllProducts();
+        }
+
+        // ==========================
+        // DISPLAY PRODUCTS IN TABLE
+        // ==========================
+        function displayProducts(products) {
+            var tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No products found</td></tr>';
+                return;
+            }
+            
+            products.forEach(function(product) {
+                var row = tbody.insertRow();
+                
+                var statusClass = 'status-in-stock';
+                if (product.Status === 'Low Stock') statusClass = 'status-low-stock';
+                if (product.Status === 'Out of Stock') statusClass = 'status-out-of-stock';
+                
+                row.innerHTML = `
+                    <td>${product.SKU}</td>
+                    <td>${product.ProductName}</td>
+                    <td>${product.Category}</td>
+                    <td>${product.Quantity}</td>
+                    <td>${product.ReorderLevel}</td>
+                    <td>₹${product.Price}</td>
+                    <td><span class="status-badge ${statusClass}">${product.Status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-view" onclick='viewProduct("${product.SKU}")'>👁️ View</button>
+                            <button class="btn-small btn-edit" onclick='editProduct("${product.SKU}")'>✏️ Edit</button>
+                            <button class="btn-small btn-delete" onclick='deleteProduct("${product.SKU}")'>🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        // ==========================
+        // DELETE PRODUCT
+        // ==========================
+        function deleteProduct(sku) {
+            if (confirm('Are you sure you want to delete product ' + sku + '?')) {
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            loadProducts(); // Reload products
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    })
+                    .withFailureHandler(function(error) {
+                        console.error('Error:', error);
+                        alert('Error deleting product!');
+                    })
+                    .deleteProduct(sku);
+            }
+        }
+
+        // ==========================
+        // SEARCH PRODUCTS
+        // ==========================
+        function searchProducts() {
+            var query = document.getElementById('searchInput').value;
+            
+            if (query.trim() === '') {
+                loadProducts(); // If search is empty, load all products
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(products) {
+                    displayProducts(products);
+                })
+                .withFailureHandler(function(error) {
+                    console.error('Error searching:', error);
+                })
+                .searchProducts(query);
+        }
+
+        // ==========================
+        // FILTER BY CATEGORY
+        // ==========================
+        function filterByCategory() {
+            var category = document.getElementById('categoryFilter').value;
+            
+            if (category === '') {
+                loadProducts(); // Load all if no category selected
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(products) {
+                    displayProducts(products);
+                })
+                .withFailureHandler(function(error) {
+                    console.error('Error filtering:', error);
+                })
+                .filterProductsByCategory(category);
+        }
+
+        // ==========================
+        // VIEW, EDIT, ADD FUNCTIONS (placeholder)
+        // ==========================
+        function viewProduct(sku) {
+            alert('View product: ' + sku + '\n\nYou can create a modal or new page to show details');
+        }
+
+        function editProduct(sku) {
+            alert('Edit product: ' + sku + '\n\nYou can create a form to edit this product');
+        }
+
+        function showAddProductForm() {
+            alert('Add new product form\n\nYou can create a modal form here');
+        }
+    </script>
+</body>
+</html>
